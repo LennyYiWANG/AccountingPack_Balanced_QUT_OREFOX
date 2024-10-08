@@ -1,0 +1,232 @@
+{% extends 'appboard/base.html' %}
+{% load modal_tags %}
+{% load static %}
+
+{% block head_title %}
+
+{% endblock %}
+
+{% block extra_head %}
+    <link href="/media/resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="/media/data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="/media/files/payroll_default/styles.css" type="text/css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+
+
+    <style>
+        .add_a{
+            left: 0px;
+            top: 0px;
+            width: 100px!important;
+            height: 40px!important;
+            background: inherit;
+              background-color: inherit;
+            background-color: rgba(35, 45, 103, 1);
+            border: none;
+            border-radius: 5px;
+            -moz-box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-family: "微软雅黑", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 14px;
+            color: #FFFFFF;
+        }
+        .add_a:hover{background-color: rgba(137, 188, 235, 1);}
+
+        .del_a{
+            left: 0px;
+            top: 0px;
+            width: 100px!important;
+            height: 40px!important;
+            background: inherit;
+              background-color: inherit;
+            background-color: rgba(249, 104, 104, 1);
+            border: none;
+            border-radius: 5px;
+            -moz-box-shadow: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            font-family: "微软雅黑", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 14px;
+            color: #FFFFFF;
+        }
+        .del_a:hover{background-color: rgba(249, 104, 104, 0.36);}
+    </style>
+
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h3>Payroll</h3>
+    <div id="" class="row">
+        <div class="">
+            <div class="row">
+                <div class="col-xs-12">
+{#                    搜索#}
+                </div>
+            </div>
+            <div class="row" style=" margin-top: 20px; margin-left: 10px;">
+
+                    <div class="add_a" style="background-color: rgb(233, 161, 6); text-align: center;color: white; vertical-align: center; line-height: 40px">
+                        <a href="{% url 'payroll:AddPayrollItem' %}" style="text-align: center;color: white; vertical-align: center; line-height: 40px" >Add</a>
+                    </div>
+{#                    <div class="del_a" style="text-align: center;color: white; vertical-align: center; line-height: 40px; margin-left: 20px;">#}
+{#                        <a href="javascript:;" style="text-align: center;color: white; vertical-align: center; line-height: 40px" >Delete</a>#}
+{#                    </div>#}
+
+            </div>
+
+
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-xs-12">
+            <div class="card">
+              <div class="card-header" style="background-color: rgba(35, 45, 103, 1); padding-top: 25px; padding-bottom: 25px;">
+{#                <h3 class="card-title">DataTable with minimal features & hover style</h3>#}
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                      <th>ID</th>
+                    <th>Serial number</th>
+                    <th>Name</th>
+                    <th>time</th>
+                    <th>CRN</th>
+                    <th>Gender</th>
+                    <th>Department</th>
+                    <th>Tax ID</th>
+                    <th>Address</th>
+                    <th>Tel</th>
+                    <th>Bank of Account</th>
+                    <th>Account Number</th>
+                    <th>Payroll item</th>
+                      <th>Operation</th>
+                    <th>Salary item amount</th>
+
+                    <th>Currency</th>
+                    <th>Total wages</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for data in datas %}
+                  <tr>
+                      <td>{{ data.id }}</td>
+                    <td>{{ data.serial_number }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.time|date:'Y-m-d' }}</td>
+                    <td>{{ data.CRN }}</td>
+                    <td>{{ data.gender }}</td>
+                    <td>{{ data.department }}</td>
+                    <td>{{ data.Tax_ID }}</td>
+                    <td>{{ data.address }}</td>
+                    <td>{{ data.tel }}</td>
+                    <td>{{ data.bank_of_account }}</td>
+                    <td>{{ data.account_number }}</td>
+                    <td>
+                        {% for payroll_item in data.payroll_items.all %}
+                            <p>{{ payroll_item }}</p>
+                        {% endfor %}
+
+                    </td>
+                    <td style="padding-top: 20px;">
+                        <a href="{% url 'payroll:EditPayrollItem' data.id %}" style="background-color: rgb(12, 85, 5); color: white" class="btn btn-primary btn-sm" type="button">Edit</a>
+                        <a href="{% url 'payroll:DelPayrollItem' data.id %}" class="btn btn-danger btn-sm" type="button" style="margin-top: 10px; color: white">Delete</a>
+                    </td>
+                    <td>{{ data.salary_item_amount }}</td>
+
+                    <td>{{ data.currency }}</td>
+                    <td>{{ data.total_wages }}</td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+    </div>
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+{#    <script src="{% static 'dist/js/demo.js' %}"></script>#}
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+{#    <script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>#}
+    <script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "paging": true,
+                "responsive": true,
+                "lengthChange": true,
+                "autoWidth": false,
+                "searching": true,
+                "ordering": true,
+                order: [[ 0, 'desc' ]],
+
+
+                "columnDefs": [
+                    { "width": "5%", "targets": 1 },
+                    { "width": "5%", "targets": 2 },
+                    { "width": "5%", "targets": 3 },
+                    { "width": "5%", "targets": 4 },
+                    { "width": "2%", "targets": 5 },
+                    { "width": "3%", "targets": 6 },
+                    { "width": "10%", "targets": 12 },
+
+
+                  ],
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+            }
+        );
+    </script>
+
+{#    <script src="/media/resources/scripts/axure/ios.js"></script>#}
+
+{% endblock %}

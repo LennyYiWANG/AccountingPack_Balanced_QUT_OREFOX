@@ -1,0 +1,468 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <title>Quote</title>
+{% endblock %}
+
+{% block content %}
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #print-div, #print-div * {
+            visibility: visible;
+        }
+        #print-div {
+            position: absolute;
+            left: 30px;
+            top: 40px;
+        }
+    }
+</style>
+
+<div class="container" id="print-div">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <!--general quoting details including client details -->
+                    <div class="quote-title">
+                        <h4 class="float-end font-size-15">Quote:<span class="badge bg-secondary font-size-12 ms-2">{{ quote.status }}</span></h4>
+                        <div class="mb-4">
+                            <img class="img-profile" style="height: 44px; width: 44px; transform: rotate(345deg);"
+                                src="{% static 'website/images/icons/counter-center-new.png' %}">
+                            <span class="text-of-light ms-2 pt-1 side-orefox">OREFOX</span>
+                        </div>
+                        <div class="text-muted">
+                            <p class="mb-1">69 Ann St, Brisbane City QLD 4000</p>
+                            <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i>warwick@orefox.com</p>
+                            <p><i class="uil uil-phone me-1"></i>0412712345</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="text-muted">
+                                <h5 class="font-size-16 mb-3">Billed To:</h5>
+                                <h5 class="font-size-15 mb-2">{{ quote.client }}</h5>
+                                <p class="mb-1">{{ quote.client.company_name }}</p>
+                                <p class="mb-1">{{ quote.client.email }}</p>
+                                <p>{{ quote.client.number}}</p>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="text-muted text-sm-end">
+                                <div>
+                                    <h5 class="font-size-15 mb-1">Quotation No:</h5>
+                                    <p>{{ quote.id }}</p>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-size-15 mb-1">Quotation Date:</h5>
+                                    <p>{{ quote.date }}</p>
+                                </div>
+                                <div class="mt-4">
+                                    <h5 class="font-size-15 mb-1">Customer ID:</h5>
+                                    <p>{{ quote.client_id }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- quoting details for totals and line items -->
+                    <div class="py-2">
+                        <h5 class="font-size-15">Order Summary</h5>
+                        <button id="delete-selected" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected" disabled>
+                            <span class="fa fa-trash"></span>
+                        </button>
+                        <button id="edit-selected" class="btn btn-sm btn-warning float-right text-xs" data-toggle="tooltip" data-placement="left" title="Edit Selected" disabled>
+                            <span class="fa fa-edit"></span>
+                        </button>
+                        <div class="table-responsive">
+                            <table class="table align-middle table-nowrap table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">Select</th>
+                                        <th style="width: 70px;">No.</th>
+                                        <th>Description</th>
+                                        <th>Unit Price</th>
+                                        <th>Quantity</th>
+                                        <th style="width: 120px;">Line Total</th>
+                                        <th>Tax</th>
+                                        <th style="width: 120px;" class="text-end"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quote-items">
+                                    <!-- For line-item rows  -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4">
+                            <div class="mt-4">
+                                <div class="row">
+                                    <div class="col-md-6 offset-md-6">
+                                        <div class="text-end">
+                                            <p><strong>Sub Total:</strong> $<span id="subtotal"></span></p>
+                                            <p><strong>Discount:</strong> <span>{{ quote.discount }}</span>%</p>
+                                            <p><strong>Shipping Charge:</strong> $<span>{{ quote.shipping }}</span></p>
+                                            <p><strong>Tax:</strong> $<span id="tax"></span></p>
+                                            <p><strong>Total:</strong> $<span id="total_amount"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-print-none mt-4 d-flex justify-content-between align-items-center">
+                            <button id="add-line-item" class="btn btn-secondary">Add Line Item</button>
+                            <div class="d-flex align-items-center">
+                                <a href="{% url 'quoting:get_quote_pdf' quote.id %}" class="btn btn-success w-md" style="margin-right: 10px;">Download</a>
+                                <form action="{% url 'quoting:send_quote_email' quote.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button id="open-confirm-modal" class="btn btn-primary w-md mr-2">Send</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end col -->
+    </div>
+</div>
+
+<!-- Modal for Add Line Item Form -->
+<div class="modal fade" id="line-item-modal" tabindex="-1" aria-labelledby="line-item-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="line-item-modal-label">Add Line Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-line-item-form">
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}">Description</label>
+                        <input type="text" id="{{ form.description.id_for_label }}" name="description" class="form-control" value="{{ form.description.value|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.unit_price.id_for_label }}">Unit Price</label>
+                        <input type="number" id="{{ form.unit_price.id_for_label }}" name="unit_price" class="form-control" value="{{ form.unit_price.value|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+                        <input type="number" id="{{ form.quantity.id_for_label }}" name="quantity" class="form-control" value="{{ form.quantity.value|default_if_none:'' }}">
+                    </div>
+                    <button type="submit" class="btn btn-success">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Edit Line Item Form -->
+<div class="modal fade" id="edit-line-item-modal" tabindex="-1" aria-labelledby="edit-line-item-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="edit-line-item-modal-label">Update Line Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-line-item-form" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}">Update Description</label>
+                        <input type="text" id="{{ form.description.id_for_label }}" name="description" class="form-control" value="{{ form.description.value|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.unit_price.id_for_label }}">Update Unit Price</label>
+                        <input type="number" id="{{ form.unit_price.id_for_label }}" name="unit_price" class="form-control" value="{{ form.unit_price.value|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.quantity.id_for_label }}">Update Quantity</label>
+                        <input type="number" id="{{ form.quantity.id_for_label }}" name="quantity" class="form-control" value="{{ form.quantity.value|default_if_none:'' }}">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="edit-line-item-form">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Delete Line Item  -->
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteLineItemModal">Delete Quote</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3> Are you sure you want to delete the selected item(s)?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger" id="confirm-delete">Delete Quote</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for confirming email of invoice  -->
+<div class="modal fade" id="sendConfirmModal" tabindex="-1" aria-labelledby="sendConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sendModal">Send Quote</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3> Are you sure you want to send this quote to the client?</h3>
+                <h5> This will be sent to the email: {{quote.client.email}}</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="confirm-send">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script for dynamic content -->
+<script>
+        //Disables the edit button if none, or more than one checkbox is checked
+        function updateEditButtonStatus() {
+          const selectedCount = selected.length;
+          $('#edit-selected').prop('disabled', !(selectedCount === 1));
+        }
+
+        var selected = [];
+        const quoteId = "{{ quote.id }}";
+        
+        //Code for adding line items, deleting line items, updating the button statuses and reloading the page on specific action
+        $(document).ready(function() {
+            $('#delete-selected').prop('disabled', true);
+            let initialSelected = $('.item-checkbox:checked').map(function() { return this.value; }).get();
+            if (initialSelected.length > 0) {
+                $('#delete-selected').prop('disabled', false);
+                selected = initialSelected;
+            }
+            fetchLineItems(quoteId); 
+        
+            $('#add-line-item-form').submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+        
+                fetch(`/quoting/add_line_item/${quoteId}/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": getCookie('csrftoken')
+                    },
+                    body: formData,
+                    credentials: "same-origin",
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        $('#line-item-modal').modal('hide');
+                        document.getElementById("add-line-item-form").reset();
+                        fetchLineItems(quoteId);
+                        updateEditButtonStatus();
+                    }
+                    else {
+                        console.log(data.errors);
+                    }
+                });
+            });
+        
+            $('#add-line-item').click(function () {
+                $('#line-item-modal').modal('show');
+                
+            });
+        
+            $(document).on('change', '.item-checkbox', function() {
+                if (this.checked) {
+                    selected.push(this.value);
+                } else {
+                    selected.splice(selected.indexOf(this.value), 1);
+                }
+        
+                if (selected.length > 0) {
+                    $('#delete-selected').prop('disabled', false);
+                    $('#add-line-item').prop('disabled', true);
+                } else {
+                    $('#delete-selected').prop('disabled', true);
+                    $('#add-line-item').prop('disabled', false);
+                }
+        
+                updateEditButtonStatus();
+                console.log("Checked: ", selected);
+            });
+        
+            $('#delete-selected').click(function() {
+                $('#deleteConfirmModal').modal('show');
+            });
+        
+            $('#confirm-delete').click(function() {
+                $.ajax({
+                    url: '/quoting/delete_line_items/',
+                    type: 'POST',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                    data: { 'line_item_ids[]': selected, 'quote_id': quoteId },
+                    success: function(response) {
+                        $('#deleteConfirmModal').modal('hide');
+                        fetchLineItems(quoteId);
+                        location.reload()
+                    },
+                    error: function(error) {
+                        console.error(error);
+                        $('#deleteConfirmModal').modal('hide');
+                    }
+                });
+            });
+        
+            updateEditButtonStatus();
+        });
+        
+        //Code for getting the data for the single line item checked
+        $('#edit-selected').click(function () {
+            if (selected.length === 1) {
+                const lineItemId = selected[0];
+                fetch(`/quoting/get_line_item/${lineItemId}/`)
+                .then(response => response.json())
+                .then((data) => {
+                    $('#id_description').val(data.description);
+                    $('#id_unit_price').val(data.unit_price);
+                    $('#id_quantity').val(data.quantity);
+                    $('#edit-line-item-modal').modal('show');
+                });
+            }
+        });
+        
+        //Code for updating the line item data and posting it to the database, and refreshing the page to reflect data changes
+        $('#edit-line-item-form').submit(function (e) {
+            e.preventDefault();
+            const lineItemId = selected[0];
+            var formData = new FormData(this);
+        
+            fetch(`/quoting/edit_line_item/${lineItemId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                body: formData,
+                credentials: "same-origin",
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    $('#edit-line-item-modal').modal('hide');
+                    fetchLineItems(quoteId);
+                    updateEditButtonStatus();
+                    location.reload()
+                }
+                else {
+                    console.log(data.errors);
+                }
+            });
+        });
+        
+        //Code for fetching the cookie, probably don't need this as crf_token can be put into forms. Added it just in case.
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        //Code to retrieve the line items from the database based on quote id then renders the line items onto the quote template
+        function fetchLineItems(quoteId) {
+            fetchQuoteDetails(quoteId);
+            fetch(`/quoting/get_line_items/${quoteId}/`)
+            .then(response => response.json())
+            .then((data) => {
+                fetchTotals(quoteId);
+                $("#quote-items").empty();
+                const lineItems = JSON.parse(data.line_items);
+                lineItems.forEach((lineItem, index) => {
+                    let fields = lineItem.fields;
+                    let row = `<tr>
+                        <td><input type="checkbox" class="item-checkbox" value="${lineItem.pk}"></td>
+                        <td>${index + 1}</td>
+                        <td>${fields.description}</td>
+                        <td>$${fields.unit_price}</td>
+                        <td>${fields.quantity}</td>
+                        <td>$${fields.line_total}</td>
+                        <td>$${fields.tax}</td>
+                    </tr>`;
+                    $("#quote-items").append(row);
+                    updateEditButtonStatus();
+                });
+            });
+        }
+        
+        //Fetches the the calculated totals
+        function fetchTotals(quoteId){
+            fetch(`/quoting/get_quote_totals/${quoteId}/`)
+            .then(response => response.json())
+            .then((data) => {
+                document.getElementById('subtotal').innerText = data.sub_total;
+                document.getElementById('total_amount').innerText = data.total_amount;
+                document.getElementById('tax').innerText = data.tax;
+            });
+        }
+
+        //Fetches the quote status of the specific quote so that buttons can be disabled or enabled depending on the status
+        function fetchQuoteDetails(quoteId) {
+            fetch(`/quoting/get_quote_status/${quoteId}/`)
+            .then(response => response.json())
+            .then((quoteData) => {
+                let addButton = $('#add-line-item');
+                let deleteButton = $('#delete-selected'); 
+                let sendButton = $('#open-confirm-modal');
+                let editButton = $('#edit-selected');
+                if (quoteData.status === 'CONFIRMED') {
+                    addButton.prop('disabled', true);
+                    deleteButton.prop('disabled', true);
+                    sendButton.prop('disabled', true);
+                    editButton.prop('disabled', true);
+                } else {
+                    addButton.prop('disabled', false);
+                    deleteButton.prop('disabled', false);
+                    sendButton.prop('disabled', false);
+                    editButton.prop('disabled', false);
+                }
+            });
+        }
+        // Open modal when send email button is clicked. Listens for action on send button and executes the action defined in form
+        $(document).ready(function() {
+            $('#open-confirm-modal').on('click', function(e) {
+                e.preventDefault();
+                $('#sendConfirmModal').modal('show');
+            });
+            $('#confirm-send').on('click', function() {
+                $('#open-confirm-modal').closest('form').submit();
+            });
+        });
+        
+</script>
+
+
+
+{% endblock %}

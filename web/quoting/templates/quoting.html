@@ -1,0 +1,698 @@
+{% extends 'appboard/base.html' %}
+{% load modal_tags %}
+{% load static %}
+
+{% block head_title %}
+    Invoicing
+{% endblock %}
+
+{% block content %}
+        <div class="container-fluid">
+            <h3 class="text-ofx-blue px-4 py-4">Quoting<span class="fa fa-project-diagram" /></h3>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow mb-2">
+                        <!-- All the different tabs in quoting -->
+                        {# All Tabs #}
+                        <div class="card-header">
+                            <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-link active" id="nav-quote-tab" data-bs-toggle="tab" data-bs-target="#nav-quote"
+                                    role="tab" aria-controls="nav-quote" aria-selected="true">Your Quotes</a>
+                                <a class="nav-link" id="nav-history-tab" data-bs-toggle="tab" data-bs-target="#nav-history"
+                                    role="tab" aria-controls="nav-history" aria-selected="false">Quote History</a>
+                            </div>
+                        </div>
+                        <div class="card-body tab-content overflow-auto" id="nav-tabContent">
+                            {# Quotes Tab #}
+                            <div class="tab-pane active" id="nav-quote" role="tabpanel" aria-labelledby="nav-quote-tab">
+                                <table id="quote-table" class="table table-sm dt-responsive" style="width: 100%">
+                                    <span data-toggle="modal" data-target="#createQuoteModal">
+                                        <button id="delete-selected" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <button id="edit-selected" class="btn btn-sm btn-warning float-right text-xs" data-toggle="tooltip" data-placement="left" title="Edit Selected">
+                                            <span class="fa fa-edit"></span>
+                                        </button>
+                                        <button id="create-quote-button" class="btn btn-sm btn-ofx-green float-right text-xs" data-toggle="tooltip" data-placement="left" title="New quote">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </span>
+                                    <thead>
+                                        <tr>
+                                            <!-- table columns-->
+                                            <th>Select</th>
+                                            <th>Quote ID</th>
+                                            <th>Client</th>
+                                            <th>Due Date</th>
+                                            <th>Sub Total</th>
+                                            <th>Shipping</th>
+                                            <th>Discount</th>
+                                            <th>Tax</th>
+                                            <th>Total Amount</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            {# Quote History Tab #}
+                            <div class="tab-pane" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
+                                <button id="delete-selected-history" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected">
+                                    <span class="fa fa-trash"></span>
+                                </button>
+                                <table id="history-table" class="table table-sm dataTable w-100">
+                                    <thead>
+                                        <tr>
+                                            <!-- table columns-->
+                                            <th>Select</th>
+                                            <th>Quote ID</th>
+                                            <th>Client</th>
+                                            <th>Due Date</th>
+                                            <th>Sub Total</th>
+                                            <th>Shipping</th>
+                                            <th>Discount</th>
+                                            <th>Tax</th>
+                                            <th>Total Amount</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- modal for creating a quote -->
+        <div class="modal fade" id="createQuoteModal" tabindex="-1" aria-labelledby="createQuoteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createQuoteModalLabel">Create Quote</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="height: 230px; overflow-y: auto;">
+                        <form id="quote-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-8 form-group">
+                                    <label for="{{ form.client.id_for_label }}">Client</label>
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <!--list for all the clients-->
+                                            <select id="clientList" name="client" class="form-control">
+                                                <option value="">--Select Client--</option>
+                                                <!-- Options will be populated -->
+                                            </select>
+                                        </div>
+                                        <div class="ms-2">
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClientModal">New Client</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.date.id_for_label }}"> Due Date</label>
+                                <input type="date" id="{{ form.date.id_for_label }}" name="date" class="form-control" value="{{ form.date.value|default_if_none:'' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.discount.id_for_label }}">Discount</label>
+                                    <input type="number" id="{{ form.discount.id_for_label }}" name="discount" class="form-control" value="{{ form.discount.value|default_if_none:'' }}" step="0.01">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.shipping.id_for_label }}">Shipping</label>
+                                    <input type="number" id="{{ form.shipping.id_for_label }}" name="shipping" class="form-control" value="{{ form.shipping.value|default_if_none:'' }}" step="0.01">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="quote-form">Save Quote</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- modal for adding a client -->
+        <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addClientModalLabel">Add New Client</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-client-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.name.id_for_label }}">Name</label>
+                                    <input type="text" id="{{ form.name.id_for_label }}" name="name" class="form-control" value="{{ form.name.value|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.email.id_for_label }}">Email</label>
+                                    <input type="email" id="{{ form.email.id_for_label }}" name="email" class="form-control" value="{{ form.email.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.company_name.id_for_label }}">Company Name</label>
+                                    <input type="text" id="{{ form.company_name.id_for_label }}" name="company_name" class="form-control" value="{{ form.company_name.value|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.contact_phone.id_for_label }}">Contact Phone</label>
+                                    <input type="text" id="{{ form.contact_phone.id_for_label }}" name="contact_phone" class="form-control" value="{{ form.contact_phone.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.billing_address_street.id_for_label }}">Street</label>
+                                <input type="text" id="{{ form.billing_address_street.id_for_label }}" name="billing_address_street" class="form-control" value="{{ form.billing_address_street.value|default_if_none:'' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.billing_address_state.id_for_label }}">State</label>
+                                    <select id="stateSelect" class="form-control">
+                                    </select>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.billing_address_city.id_for_label }}">City</label>
+                                    <input type="text" id="{{ form.billing_address_city.id_for_label }}" name="billing_address_city" class="form-control" value="{{ form.billing_address_city.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="{{ form.billing_address_postal_code.id_for_label }}">Postal Code</label>
+                                <input type="text" id="{{ form.billing_address_postal_code.id_for_label }}" name="billing_address_postal_code" class="form-control" value="{{ form.billing_address_postal_code.value|default_if_none:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.tax_file_number.id_for_label }}">TFN</label>
+                                <input type="text" id="{{ form.tax_file_number.id_for_label }}" name="tax_file_number" class="form-control" value="{{ form.tax_file_number.value|default_if_none:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.aus_business_number.id_for_label }}">ABN</label>
+                                <input type="text" id="{{ form.aus_business_number.id_for_label }}" name="aus_business_number" class="form-control" value="{{ form.aus_business_number.value|default_if_none:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.payment_terms.id_for_label }}">Payment Terms</label>
+                                <select id="paymentTermsSelect" class="form-control">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="add-client-form">Save Client</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- confirmation modal for deleting quotes -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteQuoteModal">Delete Quote</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3> Are you sure you want to delete the selected quote(s)?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" id="deleteQuotebutton">Delete Quote</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--failure to delete quotes modal just in case-->
+        <div class="modal fade" id="failuretoDeleteModal" tabindex="-1" aria-labelledby="failureModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="failureModalLabel">Failure</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                Failed to delete the quote(s).
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- modal for editing the quote (cannot add new client in this modal)-->
+        <div class="modal fade" id="editQuoteModal" tabindex="-1" aria-labelledby="editQuoteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editQuoteModalLabel">Edit Quote</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="height: 230px; overflow-y: auto;">
+                        <form id="edit-quote-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-8 form-group">
+                                    <label for="{{ form.client.id_for_label }}">Update Client</label>
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <select id="editclientList" name="client" class="form-control">
+                                                <option value="" id="milk">--Select Client--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.date.id_for_label }}">Update Due Date</label>
+                                <input type="date" id="{{ form.date.id_for_label }}" name="date" class="form-control" value="{{ form.date.value|default_if_none:'' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.discount.id_for_label }}">Update Discount</label>
+                                    <input type="number" id="{{ form.discount.id_for_label }}" name="discount" class="form-control" value="{{ form.discount.value|default_if_none:'' }}" step="0.01">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.shipping.id_for_label }}">Update Shipping</label>
+                                    <input type="number" id="{{ form.shipping.id_for_label }}" name="shipping" class="form-control" value="{{ form.shipping.value|default_if_none:'' }}" step="0.01">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="edit-quote-form">Update Quote</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            //code to retrieve the cookie from local storage (probably don't need but implemented just in case)
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Function to load quote data
+        function loadquoteData() {
+            fetch('/quoting/get_quotes/')
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing table data
+                    quoteTable.clear().draw();
+                    quoteHistoryTable.clear().draw();
+                    // Populate DataTable with new data
+                    data.data.forEach((quote) => {
+                        //conditional statement to load data into a specific table based on quote status. This table only has unconfirmed quotes.
+                        if (quote.status !== "CONFIRMED") {
+                            const viewButton = `<button class="btn btn-primary" onclick="viewQuote(${quote.id})">View</button>`;
+                            const selectButton = `<td><input type="checkbox" class="item-checkbox" data-id="${ quote.id }"></td>`;
+                            quoteTable.row.add([
+                                selectButton,
+                                quote.id,
+                                quote.client,
+                                quote.date,
+                                quote.sub_total,
+                                quote.shipping,
+                                quote.discount,
+                                quote.tax,
+                                quote.total_amount, 
+                                quote.status,
+                                viewButton
+                           ]).draw();
+                        }
+                        if (quote.status !== "UNCONFIRMED"){
+                            //conditional statement to load data into a specific table based on quote status. This table only has confirmed quotes.
+                            const viewButton = `<button class="btn btn-primary" onclick="viewQuote(${quote.id})">View</button>`;
+                            const selectButton = `<td><input type="checkbox" class="item-checkbox" data-id="${ quote.id }"></td>`;
+                            quoteHistoryTable.row.add([
+                                selectButton,
+                                quote.id,
+                                quote.client,
+                                quote.date,
+                                quote.sub_total,
+                                quote.shipping,
+                                quote.discount,
+                                quote.tax,
+                                quote.total_amount,
+                                quote.status,
+                                viewButton,
+                            ]).draw();
+                        }
+                    
+                    })
+                })
+                .catch(error => {
+                    console.error('Error fetching quote data:', error);
+                });
+
+                //Code for deleteing singular or multiple invoices from quote and quote history tables
+                let checkedCount = 0;
+                const deleteButton = document.getElementById('delete-selected'); 
+                const deletButtonHistory = document.getElementById('delete-selected-history')
+                deletButtonHistory.disabled = true;
+                deleteButton.disabled = true;
+                
+                //targets the check boxes in the quote table for deletion
+                document.querySelector('#quote-table tbody').addEventListener('change', function(e) {
+                    if (e.target.checked) {
+                        selectedQuoteId = e.target.getAttribute('data-id');
+                        checkedCount++;
+                    } else {
+                        selectedQuoteId = null;
+                        checkedCount--;
+                    }
+
+                    deleteButton.disabled = checkedCount === 0;
+                    editButton.disabled = checkedCount !== 1; 
+                });
+
+                deleteButton.addEventListener('click', function() {
+                    if (checkedCount > 0) {
+                        $('#deleteModal').modal('show');
+                    }
+                });
+                //target the check boxes in the quote history table for deletion
+                document.querySelector('#history-table tbody').addEventListener('change', function(e) {
+                    if (e.target.checked) {
+                        selectedQuoteId = e.target.getAttribute('data-id');
+                        checkedCount++;
+                    } else {
+                        selectedQuoteId = null;
+                        checkedCount--;
+                    }
+
+                    deletButtonHistory.disabled = checkedCount === 0;
+                });
+
+                deletButtonHistory.addEventListener('click', function() {
+                    if (checkedCount > 0) {
+                        $('#deleteModal').modal('show');
+                    }
+                });
+        }
+        //Code for editing singular quote from quote table
+        let selectedQuoteId = null;
+        let editButton;
+        editButton = document.getElementById('edit-selected');
+        editButton.disabled = true;
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButton = document.getElementById('edit-selected');
+
+            if (editButton) {
+                editButton.addEventListener('click', function() {
+                    console.log('Edit button clicked');
+                    if (selectedQuoteId) {
+                        openEditQuoteModal(selectedQuoteId);
+                    }
+                });
+            } else {
+                console.log('Edit button not found');
+            }
+        });
+        //Retrieves the quote details based on quote id
+        function openEditQuoteModal(quoteId) {
+            $.ajax({
+                url: `/quoting/get_quote_id/${quoteId}/`,
+                type: 'GET',
+                success: function(response) {
+                    console.log("Received response:", response);
+                    const data = response.data;
+                    $('#editclientList').val(data.client.id);
+                    let hiddenField = $('#edit-quote-form input[name="id"]');
+                    if (hiddenField.length === 0) {
+                        $('#edit-quote-form').append(`<input type="hidden" name="id" value="${data.id}">`);
+                    } else {
+                        hiddenField.val(data.id);
+                    }
+                    $('#editQuoteModal').modal('show');
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
+    //Updates the quote details and posts them to the database
+    $("#edit-quote-form").submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/quoting/edit_quote/", 
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.status === 'success') {
+                        console.log(response.message);
+                        $('#editQuoteModal').modal('hide');
+                        loadquoteData();
+                    } else {
+                        console.log(response.message);
+                    }
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+        
+
+        let quoteTable;
+        //large section of code that is responsible for creating quotes and adding new clients, and getting the relevant data to do so
+        $(document).ready(function () {
+            let csrftoken = getCookie('csrftoken');
+            quoteTable = $('#quote-table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-", //gets rid of data table warning some how
+                    "targets": "_all"
+                }]
+            });
+            quoteHistoryTable = $('#history-table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-", //gets rid of data table warning some how
+                    "targets": "_all"
+                }]
+            });
+            loadquoteData();
+            //creates a quote and posts it to the database
+            $('#quote-form').submit(function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+                for (var pair of formData.entries()) {
+                            console.log(pair[0]+ ', '+ pair[1]); 
+                }
+
+                fetch("/quoting/create_quote/", {
+                    method: "POST",
+                    body: formData,
+                    credentials: "same-origin",
+                    headers: {
+                        "X-CSRFToken": csrftoken,
+                    },
+                })
+                //adds the newly created quote to the data table
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        loadquoteData();
+                        $('#createQuoteModal').modal('hide');
+                        // Add new row to DataTable
+                        quoteTable.row.add([
+                            data.quote.id,
+                            data.quote.client,
+                            data.quote.date,
+                            data.quote.sub_total,
+                            data.quote.shipping,
+                            data.quote.discount,
+                            data.quote.tax,
+                            data.quote.total_amount,
+                            data.quote.status
+                    ]).draw();
+                        document.getElementById("quote-form").reset();
+                    }                
+                    else {
+                        console.log(data.errors);
+                    }
+                });
+            });
+            //retrieve clients to populate client list in create quote modal
+            $.ajax({
+                url: '/invoicing/get_clients/',
+                type: 'GET',
+                success: function(response) {
+                        const data = response.data;
+                        const clientSelect = $('#clientList');
+
+                        data.forEach(function(client) {
+                            const option = new Option(client.name, client.id);
+                            clientSelect.append(option);
+                    });
+                },
+                error: function(error) {
+                console.log('Error:', error);
+                }
+            });
+            //code for adding the new client
+            $("#add-client-form").submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/invoicing/add_client/",
+                data: $(this).serialize(),
+                    success: function(response){
+                        $("#clientList").append(new Option(response.client_name, response.client_id));
+                        $("#addClientModal").modal("hide");
+                        document.getElementById("add-client-form").reset();
+                    }
+                });
+            });
+            //code for retrieving the clients from the database to populate edit client form
+            $.ajax({
+                url: '/invoicing/get_clients/',
+                type: 'GET',
+                success: function(response) {
+                        const data = response.data;
+                        const clientSelect = $('#editclientList');
+
+                        data.forEach(function(client) {
+                            const option = new Option(client.name, client.id);
+                            clientSelect.append(option);
+                    });
+                },
+                error: function(error) {
+                console.log('Error:', error);
+                }
+            });
+            //code for updating the new client selected in the database for the edit client form
+            $("#edit-client-form").submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                type: "POST",  
+                url: "/invoicing/add_client/",
+                data: $(this).serialize(),
+                    success: function(response){
+                        $("#editclientList").append(new Option(response.client_name, response.client_id));
+                        $("#editClientModal").modal("hide");
+                        document.getElementById("edit-client-form").reset();
+                    }
+                });
+            });
+            let parentModal;
+
+            //modal code to show the add client modal within the creat quote modal. Then hiding the client modal and reverting back to the create quote modal
+            $('#addClientModal').on('show.bs.modal', function () {
+                parentModal = $('#createQuoteModal');
+                parentModal.modal('hide');
+            });
+
+            $('#addClientModal').on('hidden.bs.modal', function () {
+                if (parentModal) {
+                    parentModal.modal('show');
+                }
+            });
+            $('#create-quote-button').click(function () {
+            $('#createQuoteModal').modal('show');
+            });
+        })
+        //code to populate the payment terms list in the add client modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectElement = document.getElementById('paymentTermsSelect');
+            
+            fetch('/invoicing/get_payment_terms/')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(function(option) {
+                        const optElement = document.createElement('option');
+                        optElement.value = option.value;
+                        optElement.textContent = option.display;
+                        selectElement.appendChild(optElement);
+                    });
+                })
+                .catch(error => console.error('There was a problem:', error));
+        });
+        //code to populate the states list in the add client modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectElement = document.getElementById('stateSelect');
+            
+            fetch('/invoicing/get_states/')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(function(option) {
+                        const optElement = document.createElement('option');
+                        optElement.value = option.value;
+                        optElement.textContent = option.display;
+                        selectElement.appendChild(optElement);
+                    });
+                })
+                .catch(error => console.error('There was a problem:', error));
+        });
+        //navigate to the invoice's view page
+        function viewQuote(quoteId) {
+
+            window.location.href = `/quoting/view_quote/${quoteId}/`;
+        }
+
+        //code to delete singular or multiple quotes in database
+        function deleteQuotes() {
+            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+            const selectedIds = [];
+            let csrftoken = getCookie('csrftoken');
+            selectedCheckboxes.forEach((checkbox) => {
+                selectedIds.push(checkbox.getAttribute('data-id'));
+            });
+
+            if (selectedIds.length > 0) {
+                    fetch('/quoting/delete_quotes/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "X-CSRFToken": csrftoken,
+                        },
+                        body: JSON.stringify({ 'quote_ids': selectedIds })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            $('#deleteModal').modal('hide');
+                            loadquoteData();
+                        } else {
+                            $('#failuretoDeleteModal').modal('show');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    alert('No quotes selected for deletion.');
+                }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButton = document.getElementById('deleteQuotebutton');
+
+            deleteButton.addEventListener('click', function() {
+                deleteQuotes()
+            });
+        });
+
+        </script>
+
+{% endblock %}

@@ -1,0 +1,581 @@
+﻿{% extends 'appboard/base.html' %}
+{% load modal_tags %}
+{% load static %}
+
+{% block head_title %}
+
+{% endblock %}
+
+{% block extra_head %}
+    <link href="/media/resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="/media/data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="/media/files/adding_a_payroll/styles.css" type="text/css" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+{#  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">#}
+
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    <div id="base" class="">
+
+      <!-- Unnamed (动态面板) -->
+      <div id="u2131" class="ax_default" style="bottom: 100px!important;">
+        <div id="u2131_state0" class="panel_state" data-label="State1" style="">
+          <div id="u2131_state0_content" class="panel_state_content">
+
+            <!-- Unnamed (矩形) -->
+            <div id="u2132" class="ax_default box_1">
+              <div id="u2132_div" class=""></div>
+              <div id="u2132_text" class="text ">
+                <p><button type="submit" style="background-color: rgba(255,0,0,0); border: none; color: white">Save</button></p>
+              </div>
+            </div>
+
+            <!-- Unnamed (矩形) -->
+            <div id="u2133" class="ax_default box_1">
+              <div id="u2133_div" class=""></div>
+              <div id="u2133_text" class="text ">
+                <p><a href="{% url 'payroll:index' %}" style="background-color: rgba(255,0,0,0); border: none; color: black">Cancel</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u2134" class="ax_default box_1" >
+
+        <div id="u2134_div" class="" style="background: linear-gradient(rgba(35, 45, 103, 1) 8%, transparent 8%);">
+            {{ form.errors }}
+        </div>
+        <div id="u2134_text" class="text " style="display:none; visibility: hidden; ">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (中继器) -->
+      <div id="u2135" class="ax_default" style="">
+        <script id="u2135_script" type="axure-repeater-template">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136" class="ax_default box_1 u2136">
+            <div id="u2136_div" class="u2136_div"></div>
+            <div id="u2136_text" class="text u2136_text">
+              <p><span>序号</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137" class="ax_default box_1 u2137">
+            <div id="u2137_div" class="u2137_div"></div>
+            <div id="u2137_text" class="text u2137_text">
+              <p><span>*</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138" class="ax_default text_field u2138">
+            <div id="u2138_div" class="u2138_div"></div>
+            <input id="u2138_input" type="text" value="" class="u2138_input"/>
+          </div>
+        </script>
+        <div id="u2135-1" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-1" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-1_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-1_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Serial number:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-1" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-1_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-1_text" class="text u2137_text" style="visibility: inherit">
+              <p><span>*</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-1" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-1_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-1_input" type="text" value="{{ form.instance.serial_number }}" class="u2138_input" name="serial_number"/>
+          </div>
+        </div>
+        <div id="u2135-2" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-2" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-2_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-2_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Name:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-2" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-2_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-2_text" class="text u2137_text" style="visibility: inherit">
+              <p><span>*</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-2" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-2_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-2_input" type="text" value="{{ form.instance.name }}" class="u2138_input" name="name"/>
+          </div>
+        </div>
+        <div id="u2135-3" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-3" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-3_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-3_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>CRN:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-3" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-3_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-3_text" class="text u2137_text" style="visibility: inherit">
+              <p><span>*</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-3" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-3_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-3_input" type="text" value="{{ form.instance.CRN }}" class="u2138_input" name="CRN"/>
+          </div>
+        </div>
+        <div id="u2135-4" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-4" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-4_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-4_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>* Gender:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-4" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-4_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-4_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-4" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-4_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-4_input" type="text" value="" class="u2138_input"/>
+          </div>
+        </div>
+        <div id="u2135-5" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-5" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-5_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-5_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>* Department:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-5" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-5_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-5_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-5" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-5_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-5_input" type="text" value="{{ form.instance.department }}" class="u2138_input" name="department"/>
+          </div>
+        </div>
+        <div id="u2135-6" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-6" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-6_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-6_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>* Tax ID:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-6" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-6_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-6_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-6" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-6_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-6_input" type="text" value="{{ form.instance.Tax_ID }}" class="u2138_input" name="Tax_ID"/>
+          </div>
+        </div>
+        <div id="u2135-7" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-7" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-7_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-7_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Address:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-7" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-7_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-7_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-7" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-7_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-7_input" type="text" value="{{ form.instance.address }}" class="u2138_input" name="address"/>
+          </div>
+        </div>
+        <div id="u2135-8" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-8" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-8_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-8_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Tel:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-8" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-8_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-8_text" class="text u2137_text" style="visibility: inherit">
+              <p><span>&nbsp;</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-8" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-8_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-8_input" type="text" value="{{ form.instance.tel }}" class="u2138_input" name="tel"/>
+          </div>
+        </div>
+        <div id="u2135-9" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-9" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-9_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-9_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Bank of Account:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-9" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-9_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-9_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-9" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-9_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-9_input" type="text" value="{{ form.instance.bank_of_account }}" class="u2138_input" name="bank_of_account"/>
+          </div>
+        </div>
+        <div id="u2135-10" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-10" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-10_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-10_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Account Number:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-10" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-10_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-10_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-10" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-10_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-10_input" type="text" value="{{ form.instance.account_number }}" class="u2138_input" name="account_number"/>
+          </div>
+        </div>
+        <div id="u2135-11" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-11" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-11_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-11_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>* Payroll item:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-11" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-11_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-11_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-11" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-11_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-11_input" type="text" value="" class="u2138_input"/>
+          </div>
+        </div>
+        <div id="u2135-12" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-12" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-12_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-12_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>* Salary item amount:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-12" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-12_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-12_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-12" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-12_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-12_input" type="text" value="{{ form.instance.salary_item_amount }}" class="u2138_input" name="salary_item_amount"/>
+          </div>
+        </div>
+        <div id="u2135-13" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-13" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-13_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-13_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Currency:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-13" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-13_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-13_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-13" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-13_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-13_input" type="text" value="{{ form.instance.currency }}" class="u2138_input" name="currency"/>
+          </div>
+        </div>
+        <div id="u2135-14" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-14" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-14_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-14_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>Total wages:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-14" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-14_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-14_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-14" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-14_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-14_input" disabled type="text" value="{{ form.instance.total_wages }}" class="u2138_input" name="total_wages"/>
+          </div>
+        </div>
+        <div id="u2135-15" class="preeval" style="width: 520px; height: 40px;">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2136-15" class="ax_default box_1 u2136" style="width: 110px; height: 40px; left: 10px; top: 0px;visibility: inherit">
+            <div id="u2136-15_div" class="u2136_div" style="width: 110px; height: 40px;visibility: inherit"></div>
+            <div id="u2136-15_text" class="text u2136_text" style="visibility: inherit">
+              <p><span>* Time:</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u2137-15" class="ax_default box_1 u2137" style="width: 10px; height: 40px; left: 0px; top: 0px;visibility: inherit">
+            <div id="u2137-15_div" class="u2137_div" style="width: 10px; height: 40px;visibility: inherit"></div>
+            <div id="u2137-15_text" class="text u2137_text" style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (文本框) -->
+          <div id="u2138-15" class="ax_default text_field u2138" style="width: 400px; height: 40px; left: 120px; top: 0px;visibility: inherit">
+            <div id="u2138-15_div" class="u2138_div" style="width: 400px; height: 40px;visibility: inherit"></div>
+            <input id="u2138-15_input" type="text" value="{% if form.instance.time %}{{ form.instance.time|date:'Y-m-d' }}{% else %}{{ now_time|date:'Y-m-d' }}{% endif %}" class="u2138_input" name="time"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u2139" class="ax_default box_1">
+        <div id="u2139_div" class=""></div>
+        <div id="u2139_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (中继器) -->
+      <div id="u2140" class="ax_default">
+        <script id="u2140_script" type="axure-repeater-template">
+
+          <!-- Unnamed (热区) -->
+          <div id="u2141" class="ax_default u2141">
+          </div>
+
+          <!-- Unnamed (单选按钮) -->
+          <div id="u2142" class="ax_default radio_button selected u2142" selectiongroup="rm01">
+            <label id="u2142_input_label" for="u2142_input" style="position: absolute; left: 0px;">
+              <img id="u2142_img" class="img u2142_img" src="/media/images/new_tax_invoice/u1509_selected.svg"/>
+              <div id="u2142_text" class="text u2142_text">
+                <p><span>默认</span></p>
+              </div>
+            </label>
+            <input id="u2142_input" type="radio" value="ddd" class="u2142_input" name="aaa"/>
+          </div>
+        </script>
+        <div id="u2140-1" class="preeval" style="width: 100px; height: 40px;">
+
+          <!-- Unnamed (热区) -->
+          <div id="u2141-1" class="ax_default u2141" style="visibility: inherit">
+          </div>
+
+          <!-- Unnamed (单选按钮) -->
+          <div id="u2142-1" class="ax_default radio_button selected u2142" selectiongroup="rm01" style="width: 100px; height: 20px; left: 0px; top: 10px;visibility: inherit">
+            <label id="u2142_input_label" for="u2142-1_input" style="position: absolute; left: 0px;">
+{#              <img id="u2142-1_img" class="img u2142_img" src="/media/images/new_tax_invoice/u1509_selected.svg"/>#}
+              <div id="u2142-1_text" class="text u2142_text" style="visibility: inherit">
+                <p><span>Male</span></p>
+              </div>
+            </label>
+            <input id="" type="radio" value="Male" class="" name="gender" {% if form.instance.gender == 'Male' %}checked{% endif %} />
+          </div>
+        </div>
+        <div id="u2140-2" class="preeval" style="width: 100px; height: 40px;">
+
+          <!-- Unnamed (热区) -->
+          <div id="u2141-2" class="ax_default u2141" style="visibility: inherit">
+          </div>
+
+          <!-- Unnamed (单选按钮) -->
+          <div id="u2142-2" class="ax_default radio_button selected u2142" selectiongroup="rm01" style="width: 100px; height: 20px; left: 0px; top: 10px;visibility: inherit">
+            <label id="u2142_input_label" for="u2142-2_input" style="position: absolute; left: 0px;">
+{#              <img id="u2142-2_img" class="img u2142_img" src="/media/images/new_tax_invoice/u1509_selected.svg"/>#}
+              <div id="" class="text u2142_text" style="visibility: inherit">
+                <p><span>Female</span></p>
+              </div>
+            </label>
+            <input id="u2142-2_input" type="radio" value="Female" class="" name="gender" {% if form.instance.gender == 'Female' %}checked{% endif %}/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (热区) -->
+      <div id="u2143" class="ax_default">
+      </div>
+
+      <!-- Unnamed (热区) -->
+      <div id="u2144" class="ax_default">
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u2145" class="ax_default box_1">
+        <div id="u2145_div" class=""></div>
+        <div id="u2145_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u2146" class="ax_default" data-left="160" data-top="440" data-width="400" data-height="40" layer-opacity="1">
+
+        <!-- Unnamed (文本框) -->
+        <div id="u2147" class="ax_default text_field">
+          <div id="u2147_div" class=""></div>
+{#          <input id="u2147_input" type="text" value="" class="u2147_input" name="payroll_items"/>#}
+            <select name="payroll_items" id="" style="width: 398px!important;z-index: 99999" class="select2_2" multiple="multiple">
+                <option disabled value="">-----------------</option>
+                {% for payroll_item in payroll_items %}
+                    <option {% if payroll_item.id in selected_payroll_items  %}selected{% endif %} value="{{ payroll_item.id }}">{{ payroll_item }}</option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <!-- Unnamed (组合) -->
+        <div id="u2148" class="ax_default" data-left="520" data-top="440" data-width="40" data-height="40" layer-opacity="1">
+
+          <!-- Unnamed (热区) -->
+          <div id="u2149" class="ax_default">
+          </div>
+
+          <!-- Unnamed (形状) -->
+          <div id="u2150" class="ax_default _形状">
+            <img id="u2150_img" class="img " src="/media/images/daily_accounting/u184.svg"/>
+            <div id="u2150_text" class="text " style="display:none; visibility: hidden">
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+      </div>
+    </div>
+</form>
+        <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+    <script src="/media/resources/scripts/axure/ios.js"></script>
+    <script>
+         {#$(function () {#}
+             $('.select2_2').select2();
+         {#})#}
+    </script>
+{% endblock %}

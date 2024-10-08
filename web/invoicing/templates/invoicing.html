@@ -1,0 +1,784 @@
+{% extends 'appboard/base.html' %}
+{% load modal_tags %}
+{% load static %}
+
+{% block head_title %}
+
+{% endblock %}
+
+{% block content %}
+        <div class="container-fluid">
+            <h3 class = "text-ofx-blue px-4 py-4">Invoicing<span class="fa fa-project-diagram"/></h3>
+            <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow mb-2">
+                            <!-- All the different tabs in invoicing -->
+                            {# All Tabs #}
+                                <div class="card-header">
+                                    <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                        <a class="nav-link active" id="nav-invoice-tab" data-bs-toggle="tab" data-bs-target="#nav-invoice" role="tab" aria-controls="nav-invoice" aria-selected="true">Invoice Receivable</a>
+                                        <a class="nav-link" id="nav-history-tab" data-bs-toggle="tab" data-bs-target="#nav-history" role="tab" aria-controls="nav-history" aria-selected="false">Invoice Receivable History</a>
+                                        <a class="nav-link" id="payable-tab" data-bs-toggle="tab" data-bs-target="#nav-payable" role="tab" aria-controls="nav-payable" aria-selected="false">Invoice Payable</a>
+                                        <a class="nav-link" id="payablehistory-tab" data-bs-toggle="tab" data-bs-target="#nav-payablehistory" role="tab" aria-controls="nav-payablehistory" aria-selected="false">Invoice Payable History</a>
+                                    </div>
+                                </div>
+                                <div class="card-body tab-content overflow-auto" id="nav-tabContent">
+                            {# Invoices Receivable Tab #}
+                                    <div class="tab-pane active" id="nav-invoice" role="tabpanel" aria-labelledby="nav-invoice-tab">
+                                        <button id="delete-selected" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <button id="edit-selected" class="btn btn-sm btn-warning float-right text-xs" data-toggle="tooltip" data-placement="left" title="Edit Selected">
+                                            <span class="fa fa-edit"></span>
+                                        </button>
+                                        <table id="invoice-table" class="table table-sm dt-responsive" style="width: 100%">
+                                            <span data-toggle="modal" data-target="#createInvoiceModal">
+                                                <button id="create-invoice-button" class="btn btn-sm btn-ofx-green float-right text-xs" data-toggle="tooltip" data-placement="left" title="New Invoice">
+                                                    <span class="fa fa-plus"></span>
+                                                </button>
+                                            </span> 
+                                            <thead>
+                                                <tr>
+                                                    <!-- table columns-->
+                                                    <th>Select</th>
+                                                    <th>Invoice ID</th>
+                                                    <th>Client</th>
+                                                    <th>Due Date</th>
+                                                    <th>Sub Total</th>
+                                                    <th>Shipping</th>
+                                                    <th>Discount</th>
+                                                    <th>Tax</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            {# Invoice Receivable History Tab #}
+                                    <div class="tab-pane" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
+                                        <button id="delete-selected-history" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <table id="history-table" class="table table-sm dataTable w-100">
+                                            <thead>
+                                                <tr>
+                                                    <!-- table columns-->
+                                                    <th>Select</th>
+                                                    <th>Invoice ID</th>
+                                                    <th>Client</th>
+                                                    <th>Due Date</th>
+                                                    <th>Sub Total</th>
+                                                    <th>Shipping</th>
+                                                    <th>Discount</th>
+                                                    <th>Tax</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            {# Invoice Payable Tab #}
+                                    <div class="tab-pane" id="nav-payable" role="tabpanel" aria-labelledby="payable-tab">
+                                        <button id="delete-selected" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <button id="edit-selected" class="btn btn-sm btn-warning float-right text-xs" data-toggle="tooltip" data-placement="left" title="Edit Selected">
+                                            <span class="fa fa-edit"></span>
+                                        </button>
+                                        <span data-toggle="modal" data-target="#createInvoicePayableModal">
+                                            <button id="create-invoice-payable-button" class="btn btn-sm btn-ofx-green float-right text-xs" data-target="#createInvoicePayableModal" data-toggle="tooltip" data-placement="left" title="New Payable Invoice">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </span>
+                                        <table id="payable-table" class="table table-sm dataTable w-100">
+                                            <thead>
+                                                <tr>
+                                                    <!-- table columns-->
+                                                    <th>Select</th>
+                                                    <th>Invoice ID</th>
+                                                    <th>Client</th>
+                                                    <th>Due Date</th>
+                                                    <th>Sub Total</th>
+                                                    <th>Shipping</th>
+                                                    <th>Discount</th>
+                                                    <th>Tax</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            {# Invoice Payable History Tab #}
+                                    <div class="tab-pane" id="nav-payablehistory" role="tabpanel" aria-labelledby="payablehistory-tab">
+                                        <button id="delete-selected" class="btn btn-sm btn-danger float-right text-xs" data-toggle="tooltip" data-placement="left" title="Delete Selected">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <table id="payablehistory-table" class="table table-sm dataTable w-100">
+                                            <thead>
+                                                <tr>
+                                                    <!-- table columns-->
+                                                    <th>Select</th>
+                                                    <th>Invoice ID</th>
+                                                    <th>Client</th>
+                                                    <th>Due Date</th>
+                                                    <th>Sub Total</th>
+                                                    <th>Shipping</th>
+                                                    <th>Discount</th>
+                                                    <th>Tax</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {# END TABS #}
+                            </div>
+                        </div>
+                    </div>
+    
+        </div>
+        <!-- modal for creating an invoice -->
+        <div class="modal fade" id="createInvoiceModal" tabindex="-1" aria-labelledby="createInvoiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createInvoiceModalLabel">Create Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="height: 250px; overflow-y: auto;">
+                        <form id="invoice-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-8 form-group">
+                                    <label for="{{ form.client.id_for_label }}">Client</label>
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <!--list for all the clients-->
+                                            <select id="clientList" name="client" class="form-control">
+                                                <option value="">--Select Client--</option>
+                                                <!-- Options will be populated -->
+                                            </select>
+                                        </div>
+                                        <div class="ms-2">
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClientModal">New Client</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                           
+                            <div class="form-group">
+                                <label for="{{ form.date.id_for_label }}"> Due Date</label>
+                                <input type="date" id="{{ form.date.id_for_label }}" name="date" class="form-control" value="{{ form.date.value|default_if_none:'' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.discount.id_for_label }}">Discount</label>
+                                    <input type="number" id="{{ form.discount.id_for_label }}" name="discount" class="form-control" value="{{ form.discount.value|default_if_none:'0.00' }}" step="0.01" min="0">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.shipping.id_for_label }}">Shipping</label>
+                                    <input type="number" id="{{ form.shipping.id_for_label }}" name="shipping" class="form-control" value="{{ form.shipping.value|default_if_none:'0.00' }}" step="0.01" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="invoice-form">Save Invoice</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- modal for adding a client -->
+        <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addClientModalLabel">Add New Client</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-client-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.name.id_for_label }}">Name</label>
+                                    <input type="text" id="{{ form.name.id_for_label }}" name="name" class="form-control" value="{{ form.name.value|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.email.id_for_label }}">Email</label>
+                                    <input type="email" id="{{ form.email.id_for_label }}" name="email" class="form-control" value="{{ form.email.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.company_name.id_for_label }}">Company Name</label>
+                                    <input type="text" id="{{ form.company_name.id_for_label }}" name="company_name" class="form-control" value="{{ form.company_name.value|default_if_none:'' }}">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.contact_phone.id_for_label }}">Contact Phone</label>
+                                    <input type="text" id="{{ form.contact_phone.id_for_label }}" name="contact_phone" class="form-control" value="{{ form.contact_phone.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.billing_address_street.id_for_label }}">Street</label>
+                                <input type="text" id="{{ form.billing_address_street.id_for_label }}" name="billing_address_street" class="form-control" value="{{ form.billing_address_street.value|default_if_none:'' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.billing_address_state.id_for_label }}">State</label>
+                                    <select id="stateSelect" class="form-control">
+                                    </select>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.billing_address_city.id_for_label }}">City</label>
+                                    <input type="text" id="{{ form.billing_address_city.id_for_label }}" name="billing_address_city" class="form-control" value="{{ form.billing_address_city.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group"> 
+                                <label for="{{ form.billing_address_postal_code.id_for_label }}">Postal Code</label>
+                                <input type="text" id="{{ form.billing_address_postal_code.id_for_label }}" name="billing_address_postal_code" class="form-control" value="{{ form.billing_address_postal_code.value|default_if_none:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.tax_file_number.id_for_label }}">TFN</label>
+                                <input type="text" id="{{ form.tax_file_number.id_for_label }}" name="tax_file_number" class="form-control" value="{{ form.tax_file_number.value|default_if_none:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.aus_business_number.id_for_label }}">ABN</label>
+                                <input type="text" id="{{ form.aus_business_number.id_for_label }}" name="aus_business_number" class="form-control" value="{{ form.aus_business_number.value|default_if_none:'' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.payment_terms.id_for_label }}">Payment Terms</label>
+                                <select id="paymentTermsSelect" class="form-control" type="text">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="add-client-form">Save Client</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- confirmation modal for deleting invoices -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteInvoiceModal">Delete Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3> Are you sure you want to delete the selected invoice(s)?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" id="deleteInvoicebutton">Delete Invoice</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--failure to delete invoices modal just in case-->
+        <div class="modal fade" id="failuretoDeleteModal" tabindex="-1" aria-labelledby="failureModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="failureModalLabel">Failure</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Failed to delete the invoice(s).
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- modal for editing the invoice (cannot add new client in this modal)-->
+          <div class="modal fade" id="editInvoiceModal" tabindex="-1" aria-labelledby="editInvoiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editInvoiceModalLabel">Edit Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="height: 250px; overflow-y: auto;">
+                        <form id="edit-invoice-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-8 form-group">
+                                    <label for="{{ form.client.id_for_label }}">Update Client</label>
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1"> 
+                                            <select id="editclientList" name="client" class="form-control">
+                                                <option value="">--Select Client--</option>
+                                                <!-- Options will be populated -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                           
+                            <div class="form-group">
+                                <label for="{{ form.date.id_for_label }}">Update Due Date</label>
+                                <input type="date" id="{{ form.date.id_for_label }}" name="date" class="form-control" value="{{ form.date.value|default_if_none:'' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.discount.id_for_label }}">Update Discount</label>
+                                    <input type="number" id="{{ form.discount.id_for_label }}" name="discount" class="form-control" value="{{ form.discount.value|default_if_none:'0.00' }}" step="0.01" min="0">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="{{ form.shipping.id_for_label }}">Update Shipping</label>
+                                    <input type="number" id="{{ form.shipping.id_for_label }}" name="shipping" class="form-control" value="{{ form.shipping.value|default_if_none:'0.00' }}" step="0.01" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="edit-invoice-form">Update Invoice</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--this modal was for uploading a csv file for invoice payable (didn't have time to implement)-->
+        <div class="modal fade" id="createInvoicePayableModal" tabindex="-1" aria-labelledby="createInvoicePayableModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createInvoicePayable">Upload Invoice(s)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Please choose a csv file</h3>
+                        <input type="file" id="csv_file" name="csv_file">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" id="uploadInvoicebutton">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+        <script>
+        //code to retrieve the cookie from local storage (probably don't need but implemented just in case)
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+            }
+            // Function to load invoice data
+            function loadInvoiceData() {
+            fetch('/invoicing/get_invoices/')
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing table data
+                    invoiceTable.clear().draw();
+                    invoiceHistoryTable.clear().draw();
+                    // Populate DataTable with new data
+                    data.data.forEach((invoice) => {
+                        //conditional statement to load data into a specific table based on invoice status. This table only has unpaid invoices.
+                        if (invoice.status !== "PENDING" && invoice.status != "PAID") {
+                            const viewButton = `<button class="btn btn-primary" onclick="viewInvoice(${invoice.id})">View</button>`;
+                            const selectButton = `<td><input type="checkbox" class="item-checkbox" data-id="${ invoice.id }"></td>`;
+                            invoiceTable.row.add([
+                                selectButton,
+                                invoice.id,
+                                invoice.client,
+                                invoice.date,
+                                invoice.sub_total,
+                                invoice.shipping,
+                                invoice.discount,
+                                invoice.tax,
+                                invoice.total_amount, 
+                                invoice.status,
+                                viewButton
+                           ]).draw();
+                        }
+                        //conditional statement to load data into a specific table base on invoice status. This table only has paid and pending invoices.
+                        if (invoice.status !== "UNPAID"){
+                            const viewButton = `<button class="btn btn-primary" onclick="viewInvoice(${invoice.id})">View</button>`;
+                            const selectButton = `<td><input type="checkbox" class="item-checkbox" data-id="${ invoice.id }"></td>`;
+                            invoiceHistoryTable.row.add([
+                                selectButton,
+                                invoice.id,
+                                invoice.client,
+                                invoice.date,
+                                invoice.sub_total,
+                                invoice.shipping,
+                                invoice.discount,
+                                invoice.tax,
+                                invoice.total_amount,
+                                invoice.status,
+                                viewButton
+                            ]).draw();
+                        }
+                        
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching invoice data:', error);
+                });
+
+                //Code for deleteing singular or multiple invoices from invoice payable and invoice payable history tables
+                let checkedCount = 0;
+                const deleteButton = document.getElementById('delete-selected'); 
+                const deletButtonHistory = document.getElementById('delete-selected-history')
+                deletButtonHistory.disabled = true;
+                deleteButton.disabled = true;
+                
+                //targets the check boxes in the invoice payable table for deletion
+                document.querySelector('#invoice-table tbody').addEventListener('change', function(e) {
+                    if (e.target.checked) {
+                        selectedInvoiceId = e.target.getAttribute('data-id');
+                        checkedCount++;
+                    } else {
+                        selectedInvoiceId = null;
+                        checkedCount--;
+                    }
+
+                    deleteButton.disabled = checkedCount === 0;
+                    editButton.disabled = checkedCount !== 1; 
+                });
+
+                deleteButton.addEventListener('click', function() {
+                    if (checkedCount > 0) {
+                        $('#deleteModal').modal('show');
+                    }
+                });
+                //target the check boxes in the invoice payable history table for deletion
+                document.querySelector('#history-table tbody').addEventListener('change', function(e) {
+                    if (e.target.checked) {
+                        selectedInvoiceId = e.target.getAttribute('data-id');
+                        checkedCount++;
+                    } else {
+                        selectedInvoiceId = null;
+                        checkedCount--;
+                    }
+
+                    deletButtonHistory.disabled = checkedCount === 0;
+                });
+
+                deletButtonHistory.addEventListener('click', function() {
+                    if (checkedCount > 0) {
+                        $('#deleteModal').modal('show');
+                    }
+                });
+
+               
+            }
+            //Code for editing singular invoice from invoice payable table
+            let selectedInvoiceId = null;
+            let editButton;
+            editButton = document.getElementById('edit-selected');
+            editButton.disabled = true;
+            document.addEventListener('DOMContentLoaded', function() {
+                    const editButton = document.getElementById('edit-selected');
+
+                    if (editButton) {
+                        editButton.addEventListener('click', function() {
+                            console.log('Edit button clicked');
+                            if (selectedInvoiceId) {
+                                openEditInvoiceModal(selectedInvoiceId);
+                            }
+                        });
+                    } else {
+                        console.log('Edit button not found');
+                    }
+                });
+            //Retrieves the invoice details based on invoice id
+            function openEditInvoiceModal(invoiceId) {
+                    $.ajax({
+                        url: `/invoicing/get_invoice_id/${invoiceId}/`,
+                        type: 'GET',
+                        success: function(response) {
+                            const data = response.data;
+                            $('#editclientList').val(data.client.id);
+                            let hiddenField = $('#edit-invoice-form input[name="id"]');
+                            if (hiddenField.length === 0) {
+                                $('#edit-invoice-form').append(`<input type="hidden" name="id" value="${data.id}">`);
+                            } else {
+                                hiddenField.val(data.id);
+                            }
+                            $('#editInvoiceModal').modal('show');
+                        },
+                        error: function(error) {
+                            console.log('Error:', error);
+                        }
+                    });
+            }
+
+            //Updates the invoice details and posts them to the database
+            $("#edit-invoice-form").submit(function(e){
+                    e.preventDefault();
+                    $.ajax({
+                        type: "POST",
+                        url: "/invoicing/edit_invoice/",
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                // Update was successful
+                                console.log(response.message);
+                                $('#editInvoiceModal').modal('hide');
+                                loadInvoiceData();
+                            } else {
+                                console.log(response.message);
+                            }
+                        },
+                        error: function(error) {
+                            console.log('Error:', error);
+                        }
+                    });
+                });
+
+            let invoiceTable;
+            
+            //large section of code that is responsible for creating invoices and adding new clients, and getting the relevant data to do so
+            $(document).ready(function () {
+                let csrftoken = getCookie('csrftoken');
+                invoiceTable = $('#invoice-table').DataTable({
+                    columnDefs: [{
+                        "defaultContent": "-", //gets rid of data table warning
+                        "targets": "_all"
+                    }]
+                });
+                invoiceHistoryTable = $('#history-table').DataTable({
+                    columnDefs: [{
+                        "defaultContent": "-", //gets rid of data table warning
+                        "targets": "_all"
+                    }]
+                });
+                loadInvoiceData();
+                //creates and invoice and posts it to the database
+                $('#invoice-form').submit(function (e) {
+                    e.preventDefault();
+        
+                    var formData = new FormData(this);
+                    for (var pair of formData.entries()) {
+                        console.log(pair[0]+ ', '+ pair[1]); 
+                    }
+        
+                    fetch("/invoicing/create_invoice/", {
+                        method: "POST",
+                        body: formData,
+                        credentials: "same-origin",
+                        headers: {
+                            "X-CSRFToken": csrftoken,
+        
+                        },
+                    })
+                    //adds the newly created invoice to the data table
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            loadInvoiceData();
+                            $('#createInvoiceModal').modal('hide');
+                            // Add new row to DataTable
+                            invoiceTable.row.add([
+                                data.invoice.id,
+                                data.invoice.client,
+                                data.invoice.date,
+                                data.invoice.sub_total,
+                                data.invoice.shipping,
+                                data.invoice.discount,
+                                data.invoice.tax,
+                                data.invoice.total_amount,
+                                data.invoice.status
+                        ]).draw();
+                            document.getElementById("invoice-form").reset();
+                        }
+                        else {
+                            console.log(data.errors);
+                        }
+                    });
+                });
+                //retrieve clients to populate client list in create invoice modal
+                $.ajax({
+                    url: '/invoicing/get_clients/',
+                    type: 'GET',
+                    success: function(response) {
+                            const data = response.data;
+                            const clientSelect = $('#clientList');
+        
+                            data.forEach(function(client) {
+                                const option = new Option(client.name, client.id);
+                                clientSelect.append(option);
+                        });
+                    },
+                    error: function(error) {
+                    console.log('Error:', error);
+                    }
+                });
+                //code for adding the new client
+                $("#add-client-form").submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/invoicing/add_client/",
+                    data: $(this).serialize(),
+                        success: function(response){
+                            $("#clientList").append(new Option(response.client_name, response.client_id));
+                            $("#addClientModal").modal("hide");
+                            document.getElementById("add-client-form").reset();
+                        }
+                    });
+                });
+                //code for retrieving the clients from the database to populate edit client form
+                $.ajax({
+                    url: '/invoicing/get_clients/',
+                    type: 'GET',
+                    success: function(response) {
+                            const data = response.data;
+                            const clientSelect = $('#editclientList');
+        
+                            data.forEach(function(client) {
+                                const option = new Option(client.name, client.id);
+                                clientSelect.append(option);
+                        });
+                    },
+                    error: function(error) {
+                    console.log('Error:', error);
+                    }
+                });
+                //code for updating the new client selected in the database for the edit client form
+                $("#edit-client-form").submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/invoicing/add_client/",
+                    data: $(this).serialize(),
+                        success: function(response){
+                            $("#editclientList").append(new Option(response.client_name, response.client_id));
+                            $("#editClientModal").modal("hide");
+                            document.getElementById("edit-client-form").reset();
+                        }
+                    });
+                });
+                let parentModal;
+        
+                //modal code to show the add client modal within the creat invoice modal. Then hiding the client modal and reverting back to the create invoice modal
+                $('#addClientModal').on('show.bs.modal', function () {
+                    parentModal = $('#createInvoiceModal');
+                    parentModal.modal('hide');
+                });
+
+                $('#addClientModal').on('hidden.bs.modal', function () {
+
+                    if (parentModal) {
+                        parentModal.modal('show');
+                    }
+                });
+                $('#create-invoice-button').click(function () {
+                $('#createInvoiceModal').modal('show'); 
+                });
+            })
+            //code to populate the payment terms list in the add client modal
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectElement = document.getElementById('paymentTermsSelect');
+                
+                fetch('/invoicing/get_payment_terms/')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(function(option) {
+                            const optElement = document.createElement('option');
+                            optElement.value = option.value;
+                            optElement.textContent = option.display;
+                            selectElement.appendChild(optElement);
+                        });
+                    })
+                    .catch(error => console.error('There was a problem:', error));
+            });
+            //code to populate the states list in the add client modal
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectElement = document.getElementById('stateSelect');
+                
+                fetch('/invoicing/get_states/')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(function(option) {
+                            const optElement = document.createElement('option');
+                            optElement.value = option.value;
+                            optElement.textContent = option.display;
+                            selectElement.appendChild(optElement);
+                        });
+                    })
+                    .catch(error => console.error('There was a problem:', error));
+            });
+            //navigate to the invoice's view page
+            function viewInvoice(invoiceId) {
+                window.location.href = `/invoicing/view_invoice/${invoiceId}/`;
+            }
+
+            //code to delete singular or multiple invoices in database
+            function deleteInvoices() {
+                const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+                const selectedIds = [];
+                let csrftoken = getCookie('csrftoken');
+                selectedCheckboxes.forEach((checkbox) => {
+                    selectedIds.push(checkbox.getAttribute('data-id'));
+                });
+
+                if (selectedIds.length > 0) {
+                        fetch('/invoicing/delete_invoices/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "X-CSRFToken": csrftoken,
+                            },
+                            body: JSON.stringify({ 'invoice_ids': selectedIds })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                $('#deleteModal').modal('hide');
+                                loadInvoiceData();
+                            } else {
+                                $('#failuretoDeleteModal').modal('show');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    } else {
+                        alert('No invoices selected for deletion.');
+                    }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const deleteButton = document.getElementById('deleteInvoicebutton');
+
+                deleteButton.addEventListener('click', function() {
+                    deleteInvoices()
+                });
+            });
+
+        </script>
+{% endblock %}
